@@ -29,3 +29,17 @@ export const getAllPosts = async (req, res) => {
         res.status(400).json({error: error.message});
     }
 };
+
+export const deletePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletePostQuery = `
+            DELETE FROM posts
+            WHERE id = $1
+            RETURNING id;
+        `;
+        const result = await query(deletePostQuery, [id]);
+    } catch (error) {
+        res.status(400).json({error: error.message});
+    }
+}
