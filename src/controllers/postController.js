@@ -43,3 +43,20 @@ export const deletePost = async (req, res) => {
         res.status(400).json({error: error.message});
     }
 }
+
+export const updatePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { content } = req.body;
+        const updatePostQuery = `
+            UPDATE posts
+            SET content = $1, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $2
+            RETURNING id, content, updated_at;
+        `;
+        const result = await query(updatePostQuery, [content, id]);
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(400).json({error: error.message});
+    }
+}
